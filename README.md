@@ -1,0 +1,1 @@
+A front-end implementation of several statistical models, using user-generated data.
