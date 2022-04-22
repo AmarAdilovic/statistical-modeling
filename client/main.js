@@ -10,4 +10,49 @@ const getData = async () => {
         console.log("R-Value: " + rValue);
 }
 
+function handleFile(){
+        let file = this.files[0];
+        let reader = new FileReader();
+      
+        reader.readAsText(file);
+      
+        reader.onload = function() {
+                console.log(reader.result);
+        };
+      
+        reader.onerror = function() {
+          console.log(reader.error);
+        };
+      
+}
+
+function setHTML(){
+        // Container for all elements on the page
+        const container = document.querySelector(".container");
+
+        const inputContainer = document.createElement("div");
+        inputContainer.setAttribute("id", "inputDiv");
+
+        const form = document.createElement("form");
+        form.setAttribute("method", "post");
+        form.setAttribute("enctype", "multipart/form-data");
+
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".csv";
+        input.addEventListener("change", handleFile, false);
+
+
+        const contentContainer = document.createElement("div")
+        contentContainer.setAttribute("id", "contentDiv");;
+        
+        form.appendChild(input);
+        inputContainer.appendChild(form);
+        contentContainer.appendChild(img);
+
+        container.appendChild(inputContainer);
+        container.appendChild(contentContainer);
+}
+
+setHTML();
 getData();
