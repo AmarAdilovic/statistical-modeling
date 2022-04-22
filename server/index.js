@@ -3,6 +3,7 @@ const cors = require('cors');
 const { spawn } = require('child_process');
 const app = express();
 const port = 3000;
+const multer  = require('multer')
 
 app.use(cors());
 
@@ -14,5 +15,13 @@ app.get(`/data`, async (req, res) => {
         res.send(data.toString())
     });
 })
+
+var upload = multer();
+
+app.post(`/data-upload`, upload.single("csv"), async(req, res) => {  
+    res.send(req.file);
+});
+
+
 // Only runs once when the server starts running, or whenever the server is reset
 app.listen(port, () => console.log(`Listening on port ${port}!`))

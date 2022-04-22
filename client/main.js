@@ -18,6 +18,16 @@ function handleFile(){
       
         reader.onload = function() {
                 console.log(reader.result);
+                const sendFile = async () => {
+                        let formData = new FormData();
+                        formData.set("csv", file, file.name);
+
+                        const response = await fetch(`http://localhost:3000/data-upload`, {body: formData, method: "POST",});
+                        const data = JSON.parse(await response.text());
+        
+                        console.log(data);
+                }
+                sendFile();
         };
       
         reader.onerror = function() {
@@ -34,12 +44,15 @@ function setHTML(){
         inputContainer.setAttribute("id", "inputDiv");
 
         const form = document.createElement("form");
+        form.setAttribute("id", "form");
         form.setAttribute("method", "post");
+        form.setAttribute("action", "/data-upload");
         form.setAttribute("enctype", "multipart/form-data");
 
         const input = document.createElement("input");
         input.type = "file";
         input.accept = ".csv";
+        input.name = "csv";
         input.addEventListener("change", handleFile, false);
 
 
