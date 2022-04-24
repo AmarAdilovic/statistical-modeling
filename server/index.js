@@ -56,7 +56,6 @@ app.post(`/data-upload`, upload.single("csv"), async(req, res) => {
     return res.send(req.file);
 });
 
-// URGENT: current iteration results in an "Can't render headers" bug. Will be fixed in next iteration.
 app.get(`/data-retrieve`, async (req, res) => {
     // Gets a list of strings of all files within the directory
     const files = fs.readdirSync(__dirname);
@@ -67,11 +66,13 @@ app.get(`/data-retrieve`, async (req, res) => {
         const python = spawn('python3', ['statisticalEval.py', files[0]]);
         // collect data from script
         let filePath = __dirname +"/" + files[0];
-        python.stdout.on('data', (data) => {
+
+        python.stdout.once('data', (data) => {
             console.log("Python successfully ran");
             return res.send(data.toString());
-        })
-        .on('close', (code) =>{
+        });
+
+        python.on('close', (code) =>{
             console.log(`child process exited with code ${code}`);
             fs.rm(filePath, (err) => {
                 if(err){
@@ -81,6 +82,7 @@ app.get(`/data-retrieve`, async (req, res) => {
                 }
             })
             console.log("File removed.");
+
         });
         
     }
