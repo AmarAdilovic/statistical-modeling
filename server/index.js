@@ -4,6 +4,7 @@ const { spawn } = require('child_process');
 const app = express();
 const port = 3000;
 const multer  = require('multer')
+var path = require('path')
 
 app.use(cors());
 
@@ -16,9 +17,22 @@ app.get(`/data`, async (req, res) => {
     });
 })
 
-var upload = multer();
+const storage = multer.diskStorage({
+    // Saves the given file into the local (server) directory
+    destination: function (req, file, cb) {
+        cb(null, __dirname)
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)) //Renames csv and appends extension
+    }
+})
+
+// WARNING: Saving a file to the local directory will cause the VSCode LiveServer extension to refresh the client
+// Thus causing this project to be incompatible with LiveServer
+const upload = multer({ storage: storage })
 
 app.post(`/data-upload`, upload.single("csv"), async(req, res) => {  
+    console.log("File uploaded");
     res.send(req.file);
 });
 

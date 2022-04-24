@@ -11,12 +11,14 @@ const getData = async () => {
 }
 
 function handleFile(){
+
         let file = this.files[0];
         let reader = new FileReader();
       
         reader.readAsText(file);
       
-        reader.onload = function() {
+        reader.onload = async function() {
+
                 console.log(reader.result);
                 const sendFile = async () => {
                         let formData = new FormData();
@@ -24,14 +26,14 @@ function handleFile(){
 
                         const response = await fetch(`http://localhost:3000/data-upload`, {body: formData, method: "POST",});
                         const data = JSON.parse(await response.text());
-        
                         console.log(data);
                 }
-                sendFile();
+                await sendFile();
         };
       
-        reader.onerror = function() {
-          console.log(reader.error);
+        reader.onerror = function(e) {
+                e.preventDefault();
+                console.log(reader.error);
         };
       
 }
