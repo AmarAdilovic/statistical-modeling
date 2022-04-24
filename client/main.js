@@ -1,6 +1,6 @@
 const img = document.querySelector(`#chart`);
 
-const getData = async () => {
+const getDefaultData = async () => {
         // Returns a promise regarding the response from the server
         const res = await fetch(`http://localhost:3000/data`);
         // Parses the information passed in and decodes the image
@@ -8,6 +8,16 @@ const getData = async () => {
         img.src = `data:image/jpg;base64,${data.img}`;
         let rValue = data.r_val;
         console.log("R-Value: " + rValue);
+
+}
+
+async function getData() {
+        // Returns a promise regarding the response from the server
+        const res = await fetch(`http://localhost:3000/data-retrieve`);
+        // Parses the information passed in and decodes the image
+        const data = JSON.parse(await res.text());
+        img.src = `data:image/jpg;base64,${data.img}`;
+        console.log("getData() called");
 }
 
 function handleFile(){
@@ -18,7 +28,6 @@ function handleFile(){
         reader.readAsText(file);
       
         reader.onload = async function() {
-
                 console.log(reader.result);
                 const sendFile = async () => {
                         let formData = new FormData();
@@ -29,10 +38,10 @@ function handleFile(){
                         console.log(data);
                 }
                 await sendFile();
+                getData();
         };
       
-        reader.onerror = function(e) {
-                e.preventDefault();
+        reader.onerror = function() {
                 console.log(reader.error);
         };
       
@@ -70,4 +79,4 @@ function setHTML(){
 }
 
 setHTML();
-getData();
+getDefaultData();

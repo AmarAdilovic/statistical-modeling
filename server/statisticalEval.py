@@ -1,19 +1,35 @@
+from matplotlib import use
 import numpy as np
 import matplotlib.pyplot as plt  # To visualize
-import pandas as pd  # To read data
+import pandas as pd
+from requests import head  # To read data
 from sklearn.linear_model import LinearRegression
-from scipy import stats
+from scipy import rand, stats
 from scipy.stats import t
 import io
 import base64
 import json
+import sys
 
-# Reading in any csv file
-datafile = "test.csv"
-dataFrame = pd.read_csv(datafile)
+# Reads in the first argument passed in, either the "default" value, or any user uploaded files
+file = sys.argv[1]
+# The default value results in a randomly generated dataFrame of 25 values, 
+# with the default column names of 'x' and 'y'
+if(file == "default"):
+      dataFrame = pd.DataFrame(columns=['x','y'])
+      for i in range(25):
+            randIntArray = np.random.rand(25)
+            dataFrame.loc[i] = [randIntArray[np.random.randint(0, 24)], randIntArray[np.random.randint(0, 24)]]
+      headerList = ['x', 'y']
+else:
+      # Reads in the csv file passed in
+      dataFrame = pd.read_csv(file)
+      # List of the header values at the top of each column
+      headerList = pd.read_csv(file, nrows=0).columns.tolist()
+
 # Reshapes the data as the data should have a single feature
-x = (dataFrame.x).values.reshape(-1,1)
-y = (dataFrame.y).values.reshape(-1,1)
+x = (dataFrame[headerList[0]]).values.reshape(-1,1)
+y = (dataFrame[headerList[1]]).values.reshape(-1,1)
 
 # Create object for the LinearRegression class
 linear_regressor = LinearRegression()  
@@ -37,8 +53,8 @@ ts = tinv(0.05, len(x)-2)
 # Create a visual plot of the data
 plt.scatter(x, y)
 plt.plot(x, Y_pred, color='red')
-plt.xlabel('X')
-plt.ylabel('Y')
+plt.xlabel(headerList[0])
+plt.ylabel(headerList[1])
 # Returns the highest and lowest X and Y values of the graph
 leftX, rightX = plt.xlim()
 leftY, rightY = plt.ylim()
