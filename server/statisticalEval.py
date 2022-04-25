@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt  # To visualize
 import pandas as pd
 from requests import head  # To read data
 from sklearn.linear_model import LinearRegression
-from scipy import rand, stats
+from scipy import stats
 from scipy.stats import t
 import io
 import base64
@@ -43,12 +43,11 @@ result = stats.linregress(x[:,0], y[:,0])
 # Used to ensure any numbers are rounded to the 4th decimal place
 fourNumFloat = "%.4f"
 
-yHat = "ŷ= " + fourNumFloat % result.intercept + " + " + fourNumFloat % result.slope + "x"
+yHatEquation = "ŷ= " + fourNumFloat % result.intercept + " + " + fourNumFloat % result.slope + "x"
 RSquared = (result.rvalue)*(result.rvalue)
 
-tinv = lambda p, df: abs(t.ppf(p/2, df))
-ts = tinv(0.05, len(x)-2)
-# print(f"slope (95%): {result.slope:.4f} +/- {ts*result.stderr:.4f}")
+tinv = lambda p, degreesOfFreedom: abs(t.ppf(p/2, degreesOfFreedom))
+criticalValue = tinv(0.05, len(x)-2)
 
 # Create a visual plot of the data
 plt.scatter(x, y)
@@ -59,11 +58,12 @@ plt.ylabel(headerList[1])
 leftX, rightX = plt.xlim()
 leftY, rightY = plt.ylim()
 
-plt.text((rightY / 3), (rightX / 3), (yHat), horizontalalignment='center',
-      verticalalignment='center')
+titleText = ("Simple Linear Regression Graph")
+plt.title(titleText, loc='center', fontsize=14)
+
 # Encode the plot image into base64 and pass it to the server
 buffer = io.BytesIO()
 plt.savefig(buffer, format='jpg')
 buffer.seek(0)
 base64ImageData = base64.b64encode(buffer.read())
-print(json.dumps({'r_val': fourNumFloat % result.rvalue, 'r_2_val': fourNumFloat % RSquared, 'yHat': yHat, 'img': base64ImageData.decode('utf-8')}))
+print(json.dumps({'r_val': fourNumFloat % result.rvalue, 'r_2_val': fourNumFloat % RSquared, 'yHat': yHatEquation, 'slope_coefficient': fourNumFloat % result.slope, 'margin_of_error': fourNumFloat % (criticalValue * result.stderr),'img': base64ImageData.decode('utf-8')}))

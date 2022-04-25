@@ -29,7 +29,7 @@ app.get(`/data`, async (req, res) => {
     // Spawns a new child process that calls the python script with the default arg
     const python = spawn('python3', ['statisticalEval.py', "default"]);
     // collect data from script
-    python.stdout.on('data', (data) => {
+    python.stdout.once('data', (data) => {
         return res.send(data.toString());
     });
     // After collecting all data, all CSVs are removed from the server directory in the case that a previous run
