@@ -35,6 +35,7 @@ function getData(python, res){
         trueData += data.toString();
         // Issue with statsmodels package version 13.2.0, exclusively used in ordinaryLeastSquares.py
         trueData = trueData.replace("eval_env: 1", "");
+        console.log("within stdout.on");
         if(trueData.includes("\"}"))
             return res.send(trueData);
     });
@@ -102,13 +103,18 @@ function retrieveData(python, filePath, res){
             }
         })
         console.log("File removed.");
-
+        // After sending all data, all CSVs are removed from the server directory in the case that a previous run
+        // left a hanging csv
+        removeAllCSV(fs.readdirSync(__dirname));
     });
+
 }
 
 app.get(`/data-retrieve/linearRegression`, async (req, res) => {
     // Gets a list of strings of all files within the directory
     const files = fs.readdirSync(__dirname);
+
+
     // Ensures that the first file is a csv file
     if(files[0].includes("csv")){
         console.log(files[0]);

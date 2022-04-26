@@ -2,7 +2,6 @@ from matplotlib import use
 import numpy as np
 import matplotlib.pyplot as plt  # To visualize
 import pandas as pd
-from requests import head  # To read data
 from sklearn.linear_model import LinearRegression
 from scipy import stats
 from scipy.stats import t
@@ -18,9 +17,10 @@ file = sys.argv[1]
 if(file == "default"):
       dataFrame = pd.DataFrame(columns=['x','y'])
       for i in range(25):
-            randIntArray = np.random.rand(25)
-            dataFrame.loc[i] = [randIntArray[np.random.randint(0, 24)], randIntArray[np.random.randint(0, 24)]]
+            randIntArray = np.random.randint(25, size=25)
+            dataFrame.loc[i] = [randIntArray[np.random.randint(25)], randIntArray[np.random.randint(25)]]
       headerList = ['x', 'y']
+      dataFrame.to_csv("generated.csv")
 else:
       # Reads in the csv file passed in
       dataFrame = pd.read_csv(file)
