@@ -4,8 +4,5 @@
     "express": "^4.17.3",
     "multer": "^1.4.4",
     "node-fetch": "^3.2.3"
-  },
-  "scripts":{
-    "build": "NODE_ENV='production'; npm install; node index.js;"
   }
 }
