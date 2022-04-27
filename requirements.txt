@@ -34,7 +34,6 @@ ipython==8.2.0
 ipython-genutils==0.2.0
 ipywidgets==7.7.0
 jedi==0.18.1
-Jinja2==2.10.1
 joblib==1.1.0
 jsonpatch==1.22
 jsonpointer==2.0
