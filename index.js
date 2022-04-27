@@ -13,7 +13,7 @@ function removeAllCSV(files){
     console.log("Removing all CSVs");
 
     for(let i = 0; i < files.length; i++){
-        let filePath = __dirname +"/" + files[i];
+        let filePath = __dirname +"/csvFiles/" + files[i];
 
         if(files[i].includes(".csv")){
             fs.rm(filePath, (err) => {
@@ -35,7 +35,6 @@ function getData(python, res){
         trueData += data.toString();
         // Issue with statsmodels package version 13.2.0, exclusively used in ordinaryLeastSquares.py
         trueData = trueData.replace("eval_env: 1", "");
-        console.log("within stdout.on");
         if(trueData.includes("\"}"))
             return res.send(trueData);
     });
@@ -44,28 +43,28 @@ function getData(python, res){
         console.log("Data sent.");
 
     });
-    // After sending all data, all CSVs are removed from the server directory in the case that a previous run
+    // After sending all data, all CSVs are removed from the csvFiles directory in the case that a previous run
     // left a hanging csv
-    removeAllCSV(fs.readdirSync(__dirname));
+    removeAllCSV(fs.readdirSync(__dirname + "/csvFiles/"));
 }
 
 app.get(`/data/linearRegression`, async (req, res) => {
     // Spawns a new child process that calls the python script with the default arg
-    const python = spawn('python3', ['simpleLinearRegression.py', "default"]);
+    const python = spawn('python3.9', ['simpleLinearRegression.py', "default"]);
     getData(python, res);
 
 })
 
 app.get(`/data/ordinaryLeastSquare`, async (req, res) => {
     // Spawns a new child process that calls the python script with the default arg
-    const python = spawn('python3', ['ordinaryLeastSquares.py', "default"]);
+    const python = spawn('python3.9', ['ordinaryLeastSquares.py', "default"]);
     getData(python, res);
 })
 
 const storage = multer.diskStorage({
     // Saves the given file into the local (server) directory
     destination: function (req, file, cb) {
-        cb(null, __dirname)
+        cb(null, __dirname + "/csvFiles/")
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname)) //Renames csv and appends extension
@@ -105,36 +104,39 @@ function retrieveData(python, filePath, res){
         console.log("File removed.");
         // After sending all data, all CSVs are removed from the server directory in the case that a previous run
         // left a hanging csv
-        removeAllCSV(fs.readdirSync(__dirname));
+        removeAllCSV(fs.readdirSync(__dirname + "/csvFiles/"));
     });
 
 }
 
 app.get(`/data-retrieve/linearRegression`, async (req, res) => {
     // Gets a list of strings of all files within the directory
-    const files = fs.readdirSync(__dirname);
-
-
-    // Ensures that the first file is a csv file
-    if(files[0].includes("csv")){
-        console.log(files[0]);
-        let filePath = __dirname +"/" + files[0];
-        // spawn new child process to call the python script
-        const python = spawn('python3', ['simpleLinearRegression.py', files[0]]);
-        retrieveData(python, filePath, res);
+    const files = fs.readdirSync(__dirname + "/csvFiles/");
+    console.log(files.length);
+    for(let i = 0; i < files.length; i++){
+        // Ensures that the first file is a csv file
+        if(files[i].includes(".csv")){
+            let filePath = __dirname +"/csvFiles/" + files[i];
+            // spawn new child process to call the python script
+            const python = spawn('python3.9', ['simpleLinearRegression.py', filePath]);
+            retrieveData(python, filePath, res);
+            break;
+        }
     }
 })
 
 app.get(`/data-retrieve/ordinaryLeastSquares`, async (req, res) => {
     // Gets a list of strings of all files within the directory
-    const files = fs.readdirSync(__dirname);
-    // Ensures that the first file is a csv file
-    if(files[0].includes("csv")){
-        console.log(files[0]);
-        let filePath = __dirname +"/" + files[0];
-        // spawn new child process to call the python script
-        const python = spawn('python3', ['ordinaryLeastSquares.py', files[0]]);
-        retrieveData(python, filePath, res);
+    const files = fs.readdirSync(__dirname + "/csvFiles/");
+    for(let i = 0; i < files.length; i++){
+        // Ensures that the first file is a csv file
+        if(files[i].includes("csv")){
+            let filePath = __dirname +"/csvFiles/" + files[i];
+            // spawn new child process to call the python script
+            const python = spawn('python3.9', ['ordinaryLeastSquares.py', filePath]);
+            retrieveData(python, filePath, res);
+            break;
+        }
     }
 })
 

@@ -9,6 +9,7 @@ import io
 import base64
 import json
 import sys
+import os
 
 # Reads in the first argument passed in, either the "default" value, or any user uploaded files
 file = sys.argv[1]
@@ -20,7 +21,9 @@ if(file == "default"):
             randIntArray = np.random.randint(25, size=25)
             dataFrame.loc[i] = [randIntArray[np.random.randint(25)], randIntArray[np.random.randint(25)]]
       headerList = ['x', 'y']
-      dataFrame.to_csv("generated.csv")
+      cwd = os.getcwd()
+      path = cwd + "/csvFiles/"
+      dataFrame.to_csv(path + "generated.csv")
 else:
       # Reads in the csv file passed in
       dataFrame = pd.read_csv(file)
