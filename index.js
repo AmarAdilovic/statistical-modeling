@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { spawn } = require('child_process');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const multer  = require('multer')
 const path = require('path')
 const fs = require('fs');
@@ -142,4 +142,4 @@ app.get(`/data-retrieve/ordinaryLeastSquares`, async (req, res) => {
 
 
 // Only runs once when the server starts running, or whenever the server is reset
-app.listen(process.env.PORT || port, () => console.log(`Listening on port ${port}!`))
+app.listen(port, () => console.log(`Listening on port ${port}!`))
