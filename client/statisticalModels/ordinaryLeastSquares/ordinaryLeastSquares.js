@@ -1,5 +1,3 @@
-const img = document.querySelector(`#chart`);
-
 function assignDataToHTML(data){
         const fileNameText = document.getElementById("fileNameText");
         fileNameText.textContent = data.file_name;
@@ -11,7 +9,16 @@ function assignDataToHTML(data){
         downloadFileLink.href = mainWorkingDir + "csvFiles/" + data.file_name;
         downloadFileLink.textContent = "Download " + data.file_name ;
 
+        const img = document.getElementById("chart");
         img.src = `data:image/jpg;base64,${data.img}`;
+
+        const olsText = document.getElementById("olsText");
+        let splitOLSResult = data.ols_regression_results.split(/\n|\s\n/);
+        for(let i = 0; i < 25; i++){
+                const olsLine = document.getElementById(i);
+                olsLine.textContent = splitOLSResult[i];
+        }
+
 }
 
 const removeFile = async () => {
@@ -99,12 +106,26 @@ function setHTML(){
         const downloadFileLink = document.createElement("a");
         downloadFileLink.setAttribute("id", "downloadFileLink");
 
+        const img = document.createElement("img");
+        img.setAttribute("id", "chart");
+
         const olsText = document.createElement("p");
         olsText.setAttribute("id", "olsText");
+
+        for(let i = 0; i < 25; i++){
+                const olsLine = document.createElement("pre");
+                olsLine.setAttribute("id", i);
+                olsText.appendChild(olsLine);
+        }
+
 
         form.appendChild(input);
         inputContainer.appendChild(form);
         inputContainer.appendChild(randDataButton);
+
+        contentContainer.style.display = "flex";
+        contentContainer.style.flexDirection = "column";
+        contentContainer.style.alignItems = "center";
 
         contentContainer.appendChild(fileNameText);
         contentContainer.appendChild(downloadFileLink);

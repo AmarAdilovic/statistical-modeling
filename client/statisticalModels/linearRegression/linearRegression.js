@@ -1,9 +1,7 @@
-const img = document.querySelector(`#chart`);
-
 function assignDataToHTML(data){
         const fileNameText = document.getElementById("fileNameText");
         fileNameText.textContent = data.file_name;
-        
+
         const downloadFileLink = document.getElementById("downloadFileLink");  
         let loc = window.location.pathname;
         let mainWorkingDir = loc.substring(0, loc.lastIndexOf('client'));
@@ -11,7 +9,9 @@ function assignDataToHTML(data){
         downloadFileLink.href = mainWorkingDir + "csvFiles/" + data.file_name;
         downloadFileLink.textContent = "Download " + data.file_name ;
 
+        const img = document.getElementById("chart");
         img.src = `data:image/jpg;base64,${data.img}`;
+
         const equationText = document.getElementById("equationText");
         equationText.textContent = "Simple linear regression equation for given data: " + data.yHat;
         const rValText = document.getElementById("rValText");
@@ -107,6 +107,9 @@ function setHTML(){
 
         const downloadFileLink = document.createElement("a");
         downloadFileLink.setAttribute("id", "downloadFileLink");
+
+        const img = document.createElement("img");
+        img.setAttribute("id", "chart");
 
         const equationText = document.createElement("p");
         equationText.setAttribute("id", "equationText");

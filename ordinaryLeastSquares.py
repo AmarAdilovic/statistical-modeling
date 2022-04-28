@@ -33,8 +33,9 @@ y = dataFrame[headerList[1]] # response
 x = sm.add_constant(x)  # Adds a constant term to the predictor
 
 fig = plt.figure(figsize=(12,8))
-est=sm.OLS(y, x)
+est= sm.OLS(y, x)
 est = est.fit()
+summary = str(est.summary())
 
 # Currently results in an error due to a print statement within regressionplots.py in the statsmodels package
 # Opened issue request #8248 on statsmodels, however if using a stable release of statsmodels (0.13.X), will result in issues
@@ -47,4 +48,4 @@ buffer = io.BytesIO()
 plt.savefig(buffer, format='jpg')
 buffer.seek(0)
 base64ImageData = base64.b64encode(buffer.read())
-print(json.dumps({'file_name': file.split("/")[6], 'img': base64ImageData.decode('utf-8')}))
+print(json.dumps({'file_name': file.split("/")[6], 'img': base64ImageData.decode('utf-8'), 'ols_regression_results': summary}))
