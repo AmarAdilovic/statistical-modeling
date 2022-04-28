@@ -7,7 +7,7 @@ function assignDataToHTML(data){
 
 const getDefaultData = async () => {
         // Returns a promise regarding the response from the server
-        const res = await fetch(`https://statistical-modeling.herokuapp.com/data/ordinaryLeastSquare`);
+        const res = await fetch(`https://statistical-modeling.herokuapp.com/data/ordinaryLeastSquares`);
         // Parses the information passed in and decodes the image
         const data = JSON.parse(await res.text());
         assignDataToHTML(data);
