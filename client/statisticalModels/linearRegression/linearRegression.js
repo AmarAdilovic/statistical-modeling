@@ -3,6 +3,14 @@ const img = document.querySelector(`#chart`);
 function assignDataToHTML(data){
         const fileNameText = document.getElementById("fileNameText");
         fileNameText.textContent = data.file_name;
+        
+        const downloadFileLink = document.getElementById("downloadFileLink");  
+        let loc = window.location.pathname;
+        let mainWorkingDir = loc.substring(0, loc.lastIndexOf('client'));
+        downloadFileLink.download = data.file_name;
+        downloadFileLink.href = mainWorkingDir + "csvFiles/" + data.file_name;
+        downloadFileLink.textContent = "Download " + data.file_name ;
+
         img.src = `data:image/jpg;base64,${data.img}`;
         const equationText = document.getElementById("equationText");
         equationText.textContent = "Simple linear regression equation for given data: " + data.yHat;
@@ -17,9 +25,7 @@ function assignDataToHTML(data){
 const removeFile = async () => {
         // Local host: http://localhost:3000/
         // Heroku: https://statistical-modeling.herokuapp.com/
-        const response = await fetch(`http://localhost:3000/clear-file-cache`, {method: "POST",});
-        const data = JSON.parse(await response.text());
-        console.log(data);
+        await fetch(`http://localhost:3000/clear-file-cache`, {method: "POST",});
 }
 
 const getDefaultData = async () => {
@@ -99,6 +105,9 @@ function setHTML(){
         const fileNameText = document.createElement("p");
         fileNameText.setAttribute("id", "fileNameText");
 
+        const downloadFileLink = document.createElement("a");
+        downloadFileLink.setAttribute("id", "downloadFileLink");
+
         const equationText = document.createElement("p");
         equationText.setAttribute("id", "equationText");
 
@@ -117,6 +126,7 @@ function setHTML(){
         inputContainer.appendChild(randDataButton);
 
         contentContainer.appendChild(fileNameText);
+        contentContainer.appendChild(downloadFileLink);
         contentContainer.appendChild(img);
         contentContainer.appendChild(equationText);
         contentContainer.appendChild(rValText);
