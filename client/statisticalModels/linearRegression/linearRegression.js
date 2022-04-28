@@ -15,7 +15,7 @@ function assignDataToHTML(data){
 
 const getDefaultData = async () => {
         // Returns a promise regarding the response from the server
-        const res = await fetch(`http://localhost:3000/data/linearRegression`);
+        const res = await fetch(`https://statistical-modeling.herokuapp.com/data/linearRegression`);
         // Parses the information passed in and decodes the image
         const data = JSON.parse(await res.text());
         assignDataToHTML(data);
@@ -23,7 +23,7 @@ const getDefaultData = async () => {
 
 async function getData() {
         // Returns a promise regarding the response from the server
-        const res = await fetch(`http://localhost:3000/data-retrieve/linearRegression`);
+        const res = await fetch(`https://statistical-modeling.herokuapp.com/data-retrieve/linearRegression`);
         // Parses the information passed in and decodes the image
         const data = JSON.parse(await res.text());
         assignDataToHTML(data);
@@ -40,7 +40,7 @@ function handleFile(){
                         let formData = new FormData();
                         formData.set("csv", file, file.name);
 
-                        const response = await fetch(`http://localhost:3000/data-upload`, {body: formData, method: "POST",});
+                        const response = await fetch(`https://statistical-modeling.herokuapp.com/data-upload`, {body: formData, method: "POST",});
                         const data = JSON.parse(await response.text());
                 }
                 await sendFile();
