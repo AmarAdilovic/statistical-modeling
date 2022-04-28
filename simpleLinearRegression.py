@@ -24,6 +24,7 @@ if(file == "default"):
       cwd = os.getcwd()
       path = cwd + "/csvFiles/"
       dataFrame.to_csv(path + "generated.csv")
+      file = path + "generated.csv"
 else:
       # Reads in the csv file passed in
       dataFrame = pd.read_csv(file)
@@ -69,4 +70,4 @@ buffer = io.BytesIO()
 plt.savefig(buffer, format='jpg')
 buffer.seek(0)
 base64ImageData = base64.b64encode(buffer.read())
-print(json.dumps({'r_val': fourNumFloat % result.rvalue, 'r_2_val': fourNumFloat % RSquared, 'yHat': yHatEquation, 'slope_coefficient': fourNumFloat % result.slope, 'margin_of_error': fourNumFloat % (criticalValue * result.stderr),'img': base64ImageData.decode('utf-8')}))
+print(json.dumps({'r_val': fourNumFloat % result.rvalue, 'r_2_val': fourNumFloat % RSquared, 'yHat': yHatEquation, 'slope_coefficient': fourNumFloat % result.slope, 'margin_of_error': fourNumFloat % (criticalValue * result.stderr),'img': base64ImageData.decode('utf-8'), 'file_name': file.split("/")[6]}))

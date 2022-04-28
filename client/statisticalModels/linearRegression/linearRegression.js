@@ -1,6 +1,8 @@
 const img = document.querySelector(`#chart`);
 
 function assignDataToHTML(data){
+        const fileNameText = document.getElementById("fileNameText");
+        fileNameText.textContent = data.file_name;
         img.src = `data:image/jpg;base64,${data.img}`;
         const equationText = document.getElementById("equationText");
         equationText.textContent = "Simple linear regression equation for given data: " + data.yHat;
@@ -12,10 +14,18 @@ function assignDataToHTML(data){
         confIntervalText.textContent = "95% confidence interval for the slope of the regression line: " + data.slope_coefficient + " +/- " + data.margin_of_error;
 }
 
+const removeFile = async () => {
+        // Local host: http://localhost:3000/
+        // Heroku: https://statistical-modeling.herokuapp.com/
+        const response = await fetch(`http://localhost:3000/clear-file-cache`, {method: "POST",});
+        const data = JSON.parse(await response.text());
+        console.log(data);
+}
 
 const getDefaultData = async () => {
+        await removeFile();
         // Returns a promise regarding the response from the server
-        const res = await fetch(`https://statistical-modeling.herokuapp.com/data/linearRegression`);
+        const res = await fetch(`http://localhost:3000/data/linearRegression`);
         // Parses the information passed in and decodes the image
         const data = JSON.parse(await res.text());
         assignDataToHTML(data);
@@ -23,7 +33,7 @@ const getDefaultData = async () => {
 
 async function getData() {
         // Returns a promise regarding the response from the server
-        const res = await fetch(`https://statistical-modeling.herokuapp.com/data-retrieve/linearRegression`);
+        const res = await fetch(`http://localhost:3000/data-retrieve/linearRegression`);
         // Parses the information passed in and decodes the image
         const data = JSON.parse(await res.text());
         assignDataToHTML(data);
@@ -36,15 +46,20 @@ function handleFile(){
         reader.readAsText(file);
       
         reader.onload = async function() {
+                // Clear cache prior to uploading a new file
+                await removeFile();
                 const sendFile = async () => {
                         let formData = new FormData();
                         formData.set("csv", file, file.name);
 
-                        const response = await fetch(`https://statistical-modeling.herokuapp.com/data-upload`, {body: formData, method: "POST",});
+                        const response = await fetch(`http://localhost:3000/data-upload`, {body: formData, method: "POST",});
                         const data = JSON.parse(await response.text());
                 }
                 await sendFile();
                 getData();
+                // Reset the file input so that a user can enter a file, generate random data, then enter the same file
+                const inputFile = document.getElementById("inputFile");
+                inputFile.value = "";
         };
       
         reader.onerror = function() {
@@ -69,6 +84,7 @@ function setHTML(){
         input.type = "file";
         input.accept = ".csv";
         input.name = "csv";
+        input.setAttribute("id", "inputFile");
         input.addEventListener("change", handleFile, false);
 
         const randDataButton = document.createElement("button");
@@ -80,6 +96,9 @@ function setHTML(){
         const contentContainer = document.createElement("div");
         contentContainer.setAttribute("id", "contentDiv");
         
+        const fileNameText = document.createElement("p");
+        fileNameText.setAttribute("id", "fileNameText");
+
         const equationText = document.createElement("p");
         equationText.setAttribute("id", "equationText");
 
@@ -97,6 +116,7 @@ function setHTML(){
         inputContainer.appendChild(form);
         inputContainer.appendChild(randDataButton);
 
+        contentContainer.appendChild(fileNameText);
         contentContainer.appendChild(img);
         contentContainer.appendChild(equationText);
         contentContainer.appendChild(rValText);

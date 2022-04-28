@@ -21,12 +21,12 @@ if(file == "default"):
       cwd = os.getcwd()
       path = cwd + "/csvFiles/"
       dataFrame.to_csv(path + "generated.csv")
+      file = path + "generated.csv"
 else:
       # Reads in the csv file passed in
       dataFrame = pd.read_csv(file)
       # List of the header values at the top of each column
       headerList = pd.read_csv(file, nrows=0).columns.tolist()
-
 
 x = dataFrame[headerList[0]] # predictor
 y = dataFrame[headerList[1]] # response
@@ -47,4 +47,4 @@ buffer = io.BytesIO()
 plt.savefig(buffer, format='jpg')
 buffer.seek(0)
 base64ImageData = base64.b64encode(buffer.read())
-print(json.dumps({'img': base64ImageData.decode('utf-8')}))
+print(json.dumps({'file_name': file.split("/")[6], 'img': base64ImageData.decode('utf-8')}))

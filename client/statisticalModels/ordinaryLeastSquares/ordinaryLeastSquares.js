@@ -1,13 +1,21 @@
 const img = document.querySelector(`#chart`);
 
 function assignDataToHTML(data){
+        const fileNameText = document.getElementById("fileNameText");
+        fileNameText.textContent = data.file_name;
         img.src = `data:image/jpg;base64,${data.img}`;
 }
 
+const removeFile = async () => {
+        const response = await fetch(`http://localhost:3000/clear-file-cache`, {method: "POST",});
+        const data = JSON.parse(await response.text());
+        console.log(data);
+}
 
 const getDefaultData = async () => {
+        await removeFile();
         // Returns a promise regarding the response from the server
-        const res = await fetch(`https://statistical-modeling.herokuapp.com/data/ordinaryLeastSquares`);
+        const res = await fetch(`http://localhost:3000/data/ordinaryLeastSquares`);
         // Parses the information passed in and decodes the image
         const data = JSON.parse(await res.text());
         assignDataToHTML(data);
@@ -15,7 +23,7 @@ const getDefaultData = async () => {
 
 async function getData() {
         // Returns a promise regarding the response from the server
-        const res = await fetch(`https://statistical-modeling.herokuapp.com/data-retrieve/ordinaryLeastSquares`);
+        const res = await fetch(`http://localhost:3000/data-retrieve/ordinaryLeastSquares`);
         // Parses the information passed in and decodes the image
         const data = JSON.parse(await res.text());
         assignDataToHTML(data);
@@ -28,15 +36,21 @@ function handleFile(){
         reader.readAsText(file);
       
         reader.onload = async function() {
+                // Clear cache prior to uploading a new file
+                await removeFile();
                 const sendFile = async () => {
                         let formData = new FormData();
                         formData.set("csv", file, file.name);
-
-                        const response = await fetch(`https://statistical-modeling.herokuapp.com/data-upload`, {body: formData, method: "POST",});
+                        // Local host: http://localhost:3000/
+                        // Heroku: https://statistical-modeling.herokuapp.com/
+                        const response = await fetch(`http://localhost:3000/data-upload`, {body: formData, method: "POST",});
                         const data = JSON.parse(await response.text());
                 }
                 await sendFile();
                 getData();
+                // Reset the file input so that a user can enter a file, generate random data, then enter the same file
+                const inputFile = document.getElementById("inputFile");
+                inputFile.value = "";
         };
       
         reader.onerror = function() {
@@ -61,6 +75,7 @@ function setHTML(){
         input.type = "file";
         input.accept = ".csv";
         input.name = "csv";
+        input.setAttribute("id", "inputFile");
         input.addEventListener("change", handleFile, false);
 
         const randDataButton = document.createElement("button");
@@ -72,12 +87,19 @@ function setHTML(){
         const contentContainer = document.createElement("div");
         contentContainer.setAttribute("id", "contentDiv");
 
+        const olsText = document.createElement("p");
+        olsText.setAttribute("id", "olsText");
+
+        const fileNameText = document.createElement("p");
+        fileNameText.setAttribute("id", "fileNameText");
 
         form.appendChild(input);
         inputContainer.appendChild(form);
         inputContainer.appendChild(randDataButton);
 
+        contentContainer.appendChild(fileNameText);
         contentContainer.appendChild(img);
+        contentContainer.appendChild(olsText);
 
         container.appendChild(inputContainer);
         container.appendChild(contentContainer);

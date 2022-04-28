@@ -16,6 +16,7 @@ function removeAllCSV(files){
         let filePath = __dirname +"/csvFiles/" + files[i];
 
         if(files[i].includes(".csv")){
+            console.log(files[i]);
             fs.rm(filePath, (err) => {
                 if(err){
                     console.log(err);
@@ -43,9 +44,6 @@ function getData(python, res){
         console.log("Data sent.");
 
     });
-    // After sending all data, all CSVs are removed from the csvFiles directory in the case that a previous run
-    // left a hanging csv
-    removeAllCSV(fs.readdirSync(__dirname + "/csvFiles/"));
 }
 
 app.get(`/data/linearRegression`, async (req, res) => {
@@ -55,7 +53,7 @@ app.get(`/data/linearRegression`, async (req, res) => {
 
 })
 
-app.get(`/data/ordinaryLeastSquare`, async (req, res) => {
+app.get(`/data/ordinaryLeastSquares`, async (req, res) => {
     // Spawns a new child process that calls the python script with the default arg
     const python = spawn('python3.9', ['ordinaryLeastSquares.py', "default"]);
     getData(python, res);
@@ -67,16 +65,23 @@ const storage = multer.diskStorage({
         cb(null, __dirname + "/csvFiles/")
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname)) //Renames csv and appends extension
+        cb(null, path.basename(file.originalname)) //Renames csv and appends extension
     }
 })
+
+app.post(`/clear-file-cache`, async(req, res) => {  
+    // Before sending data, all CSVs are removed from the csvFiles directory in the case that a previous run
+    // left a hanging csv
+    removeAllCSV(fs.readdirSync(__dirname + "/csvFiles/"));
+    return res.send(true);
+});
 
 // WARNING: Saving a file to the local directory will cause the VSCode LiveServer extension to refresh the client
 // Thus causing this project to be incompatible with LiveServer
 const upload = multer({ storage: storage })
 
 app.post(`/data-upload`, upload.single("csv"), async(req, res) => {  
-    console.log("File uploaded");
+    console.log("File uploaded.");
     return res.send(req.file);
 });
 
@@ -94,17 +99,6 @@ function retrieveData(python, filePath, res){
 
     python.on('close', (code) =>{
         console.log(`child process exited with code ${code}`);
-        fs.rm(filePath, (err) => {
-            if(err){
-                console.log(err);
-                res.sendStatus(500);
-                return;
-            }
-        })
-        console.log("File removed.");
-        // After sending all data, all CSVs are removed from the server directory in the case that a previous run
-        // left a hanging csv
-        removeAllCSV(fs.readdirSync(__dirname + "/csvFiles/"));
     });
 
 }
@@ -112,11 +106,11 @@ function retrieveData(python, filePath, res){
 app.get(`/data-retrieve/linearRegression`, async (req, res) => {
     // Gets a list of strings of all files within the directory
     const files = fs.readdirSync(__dirname + "/csvFiles/");
-    console.log(files.length);
     for(let i = 0; i < files.length; i++){
         // Ensures that the first file is a csv file
         if(files[i].includes(".csv")){
             let filePath = __dirname +"/csvFiles/" + files[i];
+            console.log(files[i]);
             // spawn new child process to call the python script
             const python = spawn('python3.9', ['simpleLinearRegression.py', filePath]);
             retrieveData(python, filePath, res);
