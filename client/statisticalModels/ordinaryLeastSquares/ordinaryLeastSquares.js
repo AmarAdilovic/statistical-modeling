@@ -21,17 +21,54 @@ function assignDataToHTML(data){
 
 }
 
+// Show loading screen only if this is the first time it has been shown
+let globalLoadCounter = 0;
+
+function showLoadingScreen()
+{
+    if(globalLoadCounter == 0)
+    {
+        document.getElementById("loadScreenDiv").style.display = "flex";
+        globalLoadCounter = 1;
+    }
+}
+
+function hideLoadingScreen(internalError)
+{
+    if(globalLoadCounter == 1 && !internalError)
+    {
+        document.getElementById("loadScreenDiv").style.display = "none";
+        const contentContainer = document.getElementById("contentDiv");
+        contentContainer.style.display = "flex";
+        contentContainer.style.flexDirection = "column";
+        contentContainer.style.alignItems = "center";
+        globalLoadCounter = 2;
+    }
+}
+
 const removeFile = async () => {
         await fetch(`http://localhost:3000/clear-file-cache`, {method: "POST",});
 }
 
 const getDefaultData = async () => {
-        await removeFile();
-        // Returns a promise regarding the response from the server
-        const res = await fetch(`http://localhost:3000/data/ordinaryLeastSquares`);
-        // Parses the information passed in and decodes the image
-        const data = JSON.parse(await res.text());
-        assignDataToHTML(data);
+        showLoadingScreen();
+        let internalError = false;
+        try{
+                await removeFile();
+                // Returns a promise regarding the response from the server
+                const res = await fetch(`http://localhost:3000/data/ordinaryLeastSquares`);
+                // Parses the information passed in and decodes the JSON object with the image and other information
+                const data = JSON.parse(await res.text());
+                assignDataToHTML(data);
+        }
+        catch{
+                document.getElementById("loadScreen").textContent = "An internal server error has occured, please try again later.";
+                internalError = true;
+        }
+        finally{
+                hideLoadingScreen(internalError);
+        }
+
 }
 
 async function getData() {
@@ -118,22 +155,29 @@ function setHTML(){
                 olsText.appendChild(olsLine);
         }
 
+        const loadScreenContainer = document.createElement("div");
+        loadScreenContainer.setAttribute("id", "loadScreenDiv");
+        
+        const loadScreen = document.createElement("span");
+        loadScreen.setAttribute("id", "loadScreen");
+        loadScreen.textContent = "Loading ...";
 
         form.appendChild(input);
         inputContainer.appendChild(form);
         inputContainer.appendChild(randDataButton);
 
-        contentContainer.style.display = "flex";
-        contentContainer.style.flexDirection = "column";
-        contentContainer.style.alignItems = "center";
+        contentContainer.style.display = "none";
 
         contentContainer.appendChild(fileNameText);
         contentContainer.appendChild(downloadFileLink);
         contentContainer.appendChild(img);
         contentContainer.appendChild(olsText);
 
+        loadScreenContainer.appendChild(loadScreen);
+
         container.appendChild(inputContainer);
         container.appendChild(contentContainer);
+        container.appendChild(loadScreenContainer);
 }
 
 setHTML();

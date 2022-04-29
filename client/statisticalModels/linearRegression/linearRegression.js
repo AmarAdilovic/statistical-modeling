@@ -22,6 +22,34 @@ function assignDataToHTML(data){
         confIntervalText.textContent = "95% confidence interval for the slope of the regression line: " + data.slope_coefficient + " +/- " + data.margin_of_error;
 }
 
+// Show loading screen only if this is the first time it has been shown
+let globalLoadCounter = 0;
+
+function showLoadingScreen()
+{
+    if(globalLoadCounter == 0)
+    {
+        document.getElementById("loadScreenDiv").style.display = "flex";
+        globalLoadCounter = 1;
+    }
+}
+
+function hideLoadingScreen(internalError)
+{
+    if(globalLoadCounter == 1 && !internalError)
+    {
+        document.getElementById("loadScreenDiv").style.display = "none";
+        const contentContainer = document.getElementById("contentDiv");
+        contentContainer.style.display = "flex";
+        contentContainer.style.flexDirection = "column";
+        contentContainer.style.alignItems = "center";
+        globalLoadCounter = 2;
+    }
+}
+
+
+
+
 const removeFile = async () => {
         // Local host: http://localhost:3000/
         // Heroku: https://statistical-modeling.herokuapp.com/
@@ -29,12 +57,23 @@ const removeFile = async () => {
 }
 
 const getDefaultData = async () => {
-        await removeFile();
-        // Returns a promise regarding the response from the server
-        const res = await fetch(`http://localhost:3000/data/linearRegression`);
-        // Parses the information passed in and decodes the image
-        const data = JSON.parse(await res.text());
-        assignDataToHTML(data);
+        showLoadingScreen();
+        let internalError = false;
+        try{
+                await removeFile();
+                // Returns a promise regarding the response from the server
+                const res = await fetch(`http://localhost:3000/data/linearRegression`);
+                // Parses the information passed in and decodes the JSON object with the image and other information
+                const data = JSON.parse(await res.text());
+                assignDataToHTML(data);
+        }
+        catch{
+                document.getElementById("loadScreen").textContent = "An internal server error has occured, please try again later.";
+                internalError = true;
+        }
+        finally{
+                hideLoadingScreen(internalError);
+        }
 }
 
 async function getData() {
@@ -43,6 +82,7 @@ async function getData() {
         // Parses the information passed in and decodes the image
         const data = JSON.parse(await res.text());
         assignDataToHTML(data);
+
 }
 
 function handleFile(){
@@ -57,7 +97,6 @@ function handleFile(){
                 const sendFile = async () => {
                         let formData = new FormData();
                         formData.set("csv", file, file.name);
-
                         const response = await fetch(`http://localhost:3000/data-upload`, {body: formData, method: "POST",});
                         const data = JSON.parse(await response.text());
                 }
@@ -123,11 +162,19 @@ function setHTML(){
         const confIntervalText = document.createElement("p");
         confIntervalText.setAttribute("id", "confIntervalText");
 
+        const loadScreenContainer = document.createElement("div");
+        loadScreenContainer.setAttribute("id", "loadScreenDiv");
+        
+        const loadScreen = document.createElement("span");
+        loadScreen.setAttribute("id", "loadScreen");
+        loadScreen.textContent = "Loading ...";
 
         form.appendChild(input);
         inputContainer.appendChild(form);
         inputContainer.appendChild(randDataButton);
 
+        contentContainer.style.display = "none";
+        
         contentContainer.appendChild(fileNameText);
         contentContainer.appendChild(downloadFileLink);
         contentContainer.appendChild(img);
@@ -136,8 +183,11 @@ function setHTML(){
         contentContainer.appendChild(r2ValText);
         contentContainer.appendChild(confIntervalText);
 
+        loadScreenContainer.appendChild(loadScreen);
+
         container.appendChild(inputContainer);
         container.appendChild(contentContainer);
+        container.appendChild(loadScreenContainer);
 }
 
 setHTML();

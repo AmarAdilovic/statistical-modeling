@@ -39,7 +39,7 @@ function getData(python, res){
         if(trueData.includes("\"}"))
             return res.send(trueData);
     });
-    python.on('close', (code) =>{
+    python.stdout.on('close', (code) =>{
         console.log(`child process exited with code ${code}`);
         console.log("Data sent.");
 
@@ -97,7 +97,7 @@ function retrieveData(python, filePath, res){
             return res.send(trueData);
     });
 
-    python.on('close', (code) =>{
+    python.stdout.on('close', (code) =>{
         console.log(`child process exited with code ${code}`);
     });
 
