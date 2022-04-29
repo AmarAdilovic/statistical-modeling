@@ -47,7 +47,7 @@ function hideLoadingScreen(internalError)
 }
 
 const removeFile = async () => {
-        await fetch(`http://localhost:3000/clear-file-cache`, {method: "POST",});
+        await fetch(`http://localhost:3000/clear-file-cache`);
 }
 
 const getDefaultData = async () => {
@@ -93,11 +93,12 @@ function handleFile(){
                         formData.set("csv", file, file.name);
                         // Local host: http://localhost:3000/
                         // Heroku: https://statistical-modeling.herokuapp.com/
-                        const response = await fetch(`http://localhost:3000/data-upload`, {body: formData, method: "POST",});
-                        const data = JSON.parse(await response.text());
+                        await fetch(`http://localhost:3000/data-upload`, {body: formData, method: "POST",});
                 }
                 await sendFile();
+                console.log("After uploading file, but before getting data");
                 getData();
+                console.log("After getting data");
                 // Reset the file input so that a user can enter a file, generate random data, then enter the same file
                 const inputFile = document.getElementById("inputFile");
                 inputFile.value = "";

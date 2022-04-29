@@ -18,6 +18,7 @@ function removeAllCSV(files){
         if(files[i].includes(".csv")){
             console.log(files[i]);
             fs.rm(filePath, (err) => {
+                console.log("Removing file");
                 if(err){
                     console.log(err);
                     res.sendStatus(500);
@@ -28,7 +29,12 @@ function removeAllCSV(files){
     }
 }
 
-function getData(python, res){
+app.get(`/getData`, async (req, res) => {
+    let passedFileName = req.query.fileName;
+    let passedFilePath = req.query.filePath;
+    // Spawns a new child process that calls the python script with the default arg
+    const python = spawn('python3.9', [passedFileName, passedFilePath]);
+
     // The data is sent as a buffer from stdout, trueData exists to compile that buffered data
     let trueData = "";
     // collect data from script
@@ -36,27 +42,26 @@ function getData(python, res){
         trueData += data.toString();
         // Issue with statsmodels package version 13.2.0, exclusively used in ordinaryLeastSquares.py
         trueData = trueData.replace("eval_env: 1", "");
-        if(trueData.includes("\"}"))
-            return res.send(trueData);            ;
+        if(trueData.includes("\"}")){
+            console.log("Sending true data");
+            return res.send(trueData); }           ;
     });
     python.stdout.on('close', (code) =>{
         console.log(`child process exited with code ${code}`);
         console.log("Data sent.");
 
     });
-}
+})
 
 app.get(`/data/linearRegression`, async (req, res) => {
-    // Spawns a new child process that calls the python script with the default arg
-    const python = spawn('python3.9', ['simpleLinearRegression.py', "default"]);
-    getData(python, res);
+    let fileName = encodeURIComponent('simpleLinearRegression.py');
+    res.redirect('/getData?fileName=' + fileName + '&filePath=default');
 
 })
 
 app.get(`/data/ordinaryLeastSquares`, async (req, res) => {
-    // Spawns a new child process that calls the python script with the default arg
-    const python = spawn('python3.9', ['ordinaryLeastSquares.py', "default"]);
-    getData(python, res);
+    let fileName = encodeURIComponent('ordinaryLeastSquares.py');
+    res.redirect('/getData?fileName=' + fileName + '&filePath=default');
 })
 
 const storage = multer.diskStorage({
@@ -69,7 +74,7 @@ const storage = multer.diskStorage({
     }
 })
 
-app.post(`/clear-file-cache`, async(req, res) => {  
+app.get(`/clear-file-cache`, async(req, res) => {  
     // Before sending data, all CSVs are removed from the csvFiles directory in the case that a previous run
     // left a hanging csv
     removeAllCSV(fs.readdirSync(__dirname + "/csvFiles/"));
@@ -82,7 +87,7 @@ const upload = multer({ storage: storage })
 
 app.post(`/data-upload`, upload.single("csv"), async(req, res) => {  
     console.log("File uploaded.");
-    return res.send(req.file);
+    return res.send(true);
 });
 
 app.get(`/data-retrieve/linearRegression`, async (req, res) => {
@@ -91,11 +96,10 @@ app.get(`/data-retrieve/linearRegression`, async (req, res) => {
     for(let i = 0; i < files.length; i++){
         // Ensures that the first file is a csv file
         if(files[i].includes(".csv")){
-            let filePath = __dirname +"/csvFiles/" + files[i];
+            let filePath = encodeURIComponent(__dirname +"/csvFiles/" + files[i]);
             console.log(files[i]);
-            // spawn new child process to call the python script
-            const python = spawn('python3.9', ['simpleLinearRegression.py', filePath]);
-            getData(python, res);
+            let fileName = encodeURIComponent('simpleLinearRegression.py');
+            res.redirect('/getData?fileName=' + fileName + '&filePath=' + filePath);
             break;
         }
     }
@@ -107,10 +111,9 @@ app.get(`/data-retrieve/ordinaryLeastSquares`, async (req, res) => {
     for(let i = 0; i < files.length; i++){
         // Ensures that the first file is a csv file
         if(files[i].includes("csv")){
-            let filePath = __dirname +"/csvFiles/" + files[i];
-            // spawn new child process to call the python script
-            const python = spawn('python3.9', ['ordinaryLeastSquares.py', filePath]);
-            getData(python, res);
+            let filePath = encodeURIComponent(__dirname +"/csvFiles/" + files[i]);
+            let fileName = encodeURIComponent('ordinaryLeastSquares.py');
+            res.redirect('/getData?fileName=' + fileName + '&filePath=' + filePath);
             break;
         }
     }

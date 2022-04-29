@@ -10,13 +10,13 @@ import os
 
 # Reads in the first argument passed in, either the "default" value, or any user uploaded files
 file = sys.argv[1]
-# The default value results in a randomly generated dataFrame of 25 values, 
+# The default value results in a randomly generated dataFrame of 50 values, 
 # with the default column names of 'x' and 'y'
 if(file == "default"):
       dataFrame = pd.DataFrame(columns=['x','y'])
-      for i in range(25):
-            randIntArray = np.random.randint(25, size=25)
-            dataFrame.loc[i] = [randIntArray[np.random.randint(25)], randIntArray[np.random.randint(25)]]
+      for i in range(50):
+            randIntArray = np.random.randint(50, size=50)
+            dataFrame.loc[i] = [randIntArray[np.random.randint(50)], randIntArray[np.random.randint(50)]]
       headerList = ['x', 'y']
       cwd = os.getcwd()
       path = cwd + "/csvFiles/"
