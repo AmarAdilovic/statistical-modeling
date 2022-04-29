@@ -37,7 +37,7 @@ function getData(python, res){
         // Issue with statsmodels package version 13.2.0, exclusively used in ordinaryLeastSquares.py
         trueData = trueData.replace("eval_env: 1", "");
         if(trueData.includes("\"}"))
-            return res.send(trueData);
+            return res.send(trueData);            ;
     });
     python.stdout.on('close', (code) =>{
         console.log(`child process exited with code ${code}`);
@@ -85,24 +85,6 @@ app.post(`/data-upload`, upload.single("csv"), async(req, res) => {
     return res.send(req.file);
 });
 
-function retrieveData(python, filePath, res){
-    // The data is sent as a buffer from stdout, trueData exists to compile that buffered data
-    let trueData = "";
-    // collect data from script
-    python.stdout.on('data', (data) => {
-        trueData += data.toString();
-        // Issue with statsmodels package version 13.2.0, exclusively used in ordinaryLeastSquares.py
-        trueData = trueData.replace("eval_env: 1", "");
-        if(trueData.includes("\"}"))
-            return res.send(trueData);
-    });
-
-    python.stdout.on('close', (code) =>{
-        console.log(`child process exited with code ${code}`);
-    });
-
-}
-
 app.get(`/data-retrieve/linearRegression`, async (req, res) => {
     // Gets a list of strings of all files within the directory
     const files = fs.readdirSync(__dirname + "/csvFiles/");
@@ -113,7 +95,7 @@ app.get(`/data-retrieve/linearRegression`, async (req, res) => {
             console.log(files[i]);
             // spawn new child process to call the python script
             const python = spawn('python3.9', ['simpleLinearRegression.py', filePath]);
-            retrieveData(python, filePath, res);
+            getData(python, res);
             break;
         }
     }
@@ -128,7 +110,7 @@ app.get(`/data-retrieve/ordinaryLeastSquares`, async (req, res) => {
             let filePath = __dirname +"/csvFiles/" + files[i];
             // spawn new child process to call the python script
             const python = spawn('python3.9', ['ordinaryLeastSquares.py', filePath]);
-            retrieveData(python, filePath, res);
+            getData(python, res);
             break;
         }
     }
