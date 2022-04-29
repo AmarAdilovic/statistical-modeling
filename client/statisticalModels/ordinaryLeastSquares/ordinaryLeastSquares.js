@@ -47,7 +47,7 @@ function hideLoadingScreen(internalError)
 }
 
 const removeFile = async () => {
-        await fetch(`http://localhost:3000/clear-file-cache`);
+        await fetch(`https://statistical-modeling.herokuapp.com/clear-file-cache`);
 }
 
 const getDefaultData = async () => {
@@ -56,7 +56,7 @@ const getDefaultData = async () => {
         try{
                 await removeFile();
                 // Returns a promise regarding the response from the server
-                const res = await fetch(`http://localhost:3000/data/ordinaryLeastSquares`);
+                const res = await fetch(`https://statistical-modeling.herokuapp.com/data/ordinaryLeastSquares`);
                 // Parses the information passed in and decodes the JSON object with the image and other information
                 const data = JSON.parse(await res.text());
                 assignDataToHTML(data);
@@ -73,7 +73,7 @@ const getDefaultData = async () => {
 
 async function getData() {
         // Returns a promise regarding the response from the server
-        const res = await fetch(`http://localhost:3000/data-retrieve/ordinaryLeastSquares`);
+        const res = await fetch(`https://statistical-modeling.herokuapp.com/data-retrieve/ordinaryLeastSquares`);
         // Parses the information passed in and decodes the image
         const data = JSON.parse(await res.text());
         assignDataToHTML(data);
@@ -91,9 +91,7 @@ function handleFile(){
                 const sendFile = async () => {
                         let formData = new FormData();
                         formData.set("csv", file, file.name);
-                        // Local host: http://localhost:3000/
-                        // Heroku: https://statistical-modeling.herokuapp.com/
-                        await fetch(`http://localhost:3000/data-upload`, {body: formData, method: "POST",});
+                        await fetch(`https://statistical-modeling.herokuapp.com/data-upload`, {body: formData, method: "POST",});
                 }
                 await sendFile();
                 console.log("After uploading file, but before getting data");
@@ -109,9 +107,84 @@ function handleFile(){
         };
 }
 
+function setHeader(){
+        const headerContainer = document.getElementById("headerDiv");
+        headerContainer.style.display = "flex";
+        headerContainer.style.padding = "15px 0";
+        headerContainer.style.position = "fixed";
+        headerContainer.style.width = "100%";
+        headerContainer.style.top = "0px";
+        headerContainer.style.left = "0px";
+        headerContainer.style.zIndex = 2;
+        headerContainer.style.backgroundColor = "#1F2937";
+
+        const headerLinks = document.createElement("div");
+        headerLinks.style.display = "flex";
+        headerLinks.style.alignItems = "center";
+        headerLinks.style.gap = "30px";
+        headerLinks.style.marginLeft = "auto";
+
+        const homeLink = document.createElement("a");
+        const homeText = document.createTextNode("Home");
+        homeLink.title = "Home";
+        homeLink.href = "https://amaradilovic.github.io/statistical-modeling/"
+        homeLink.style.color = "white";
+        homeLink.style.textDecoration = "none";
+        homeLink.addEventListener('mouseenter', e => {
+                homeLink.style.color = "rgb(200, 200, 200)";
+        });
+              
+        homeLink.addEventListener('mouseleave', e => {
+                homeLink.style.color = "white";
+        });
+        homeLink.appendChild(homeText);
+
+        const linearRegressionLink = document.createElement("a");
+        const linearText = document.createTextNode("Linear Regression");
+        linearRegressionLink.title = "Linear Regression";
+        linearRegressionLink.href = "https://amaradilovic.github.io/statistical-modeling/statisticalModels/linearRegression/linearRegression.html"
+        linearRegressionLink.style.color = "white";
+        linearRegressionLink.style.textDecoration = "none";
+        linearRegressionLink.addEventListener('mouseenter', e => {
+                linearRegressionLink.style.color = "rgb(200, 200, 200)";
+        });
+              
+        linearRegressionLink.addEventListener('mouseleave', e => {
+                linearRegressionLink.style.color = "white";
+        });
+        linearRegressionLink.appendChild(linearText);
+
+        const ordinaryLeastSquaresLink = document.createElement("a");
+        const ordinaryText = document.createTextNode("Ordinary Least Squares");
+        ordinaryLeastSquaresLink.title = "Ordinary Least Squares";
+        ordinaryLeastSquaresLink.href = "https://amaradilovic.github.io/statistical-modeling/statisticalModels/ordinaryLeastSquares/ordinaryLeastSquares.html"
+        ordinaryLeastSquaresLink.style.color = "white";
+        ordinaryLeastSquaresLink.style.textDecoration = "none";
+        ordinaryLeastSquaresLink.addEventListener('mouseenter', e => {
+                ordinaryLeastSquaresLink.style.color = "rgb(200, 200, 200)";
+        });
+              
+        ordinaryLeastSquaresLink.addEventListener('mouseleave', e => {
+                ordinaryLeastSquaresLink.style.color = "white";
+        });
+        ordinaryLeastSquaresLink.appendChild(ordinaryText);
+
+        headerLinks.appendChild(homeLink);
+        headerLinks.appendChild(linearRegressionLink);
+        headerLinks.appendChild(ordinaryLeastSquaresLink);
+
+        headerContainer.appendChild(headerLinks);
+}
+
 function setHTML(){
         // Container for all elements on the page
         const container = document.querySelector(".container");
+        container.style.display = "flex";
+        container.style.flexDirection = "column";
+        container.style.margin = "50px";
+
+        const headerContainer = document.createElement("div");
+        headerContainer.setAttribute("id", "headerDiv");
 
         const inputContainer = document.createElement("div");
         inputContainer.setAttribute("id", "inputDiv");
@@ -176,6 +249,8 @@ function setHTML(){
 
         loadScreenContainer.appendChild(loadScreen);
 
+        container.appendChild(headerContainer);
+        setHeader();
         container.appendChild(inputContainer);
         container.appendChild(contentContainer);
         container.appendChild(loadScreenContainer);

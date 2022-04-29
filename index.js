@@ -18,7 +18,6 @@ function removeAllCSV(files){
         if(files[i].includes(".csv")){
             console.log(files[i]);
             fs.rm(filePath, (err) => {
-                console.log("Removing file");
                 if(err){
                     console.log(err);
                     res.sendStatus(500);
