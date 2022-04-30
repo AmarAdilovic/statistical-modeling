@@ -62,7 +62,7 @@ const getDefaultData = async () => {
                 assignDataToHTML(data);
         }
         catch{
-                document.getElementById("loadScreen").textContent = "An internal server error has occured, please try again later.";
+                document.getElementById("loadScreen").textContent = "An internal server error has occured, please wait a second and refresh the page.";
                 internalError = true;
         }
         finally{
