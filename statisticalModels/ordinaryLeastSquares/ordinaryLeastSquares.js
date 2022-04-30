@@ -225,8 +225,8 @@ function setHTML(){
         const randDataButton = document.createElement("button");
         randDataButton.textContent = "Random Data";
         randDataButton.addEventListener('click', async () => {
-                fetchDiv.style.display = "flex";
                 fetchScreen.textContent = "Fetching randomly generated data from the server ...";
+                fetchDiv.style.display = "flex";
                 let tryFailed = false;
                 try{
                         await getDefaultData();
