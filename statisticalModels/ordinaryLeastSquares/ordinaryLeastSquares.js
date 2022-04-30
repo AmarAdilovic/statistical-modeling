@@ -221,12 +221,12 @@ function setHTML(){
 
         const fetchScreen = document.createElement("span");
         fetchScreen.setAttribute("id", "fetchScreen");
-        fetchScreen.textContent = "Fetching randomly generated data from the server ...";
 
         const randDataButton = document.createElement("button");
         randDataButton.textContent = "Random Data";
         randDataButton.addEventListener('click', async () => {
                 fetchDiv.style.display = "flex";
+                fetchScreen.textContent = "Fetching randomly generated data from the server ...";
                 let tryFailed = false;
                 try{
                         await getDefaultData();
