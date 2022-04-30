@@ -47,7 +47,7 @@ function hideLoadingScreen(internalError)
 }
 
 const removeFile = async () => {
-        await fetch(`https://statistical-modeling.herokuapp.com/clear-file-cache`);
+        await fetch(`https://statistical-modeling.herokuapp.com/clear-file-cache`, {method: "POST",});
 }
 
 const getDefaultData = async () => {
