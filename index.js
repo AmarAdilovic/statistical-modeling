@@ -28,9 +28,7 @@ function removeAllCSV(files){
     }
 }
 
-app.get(`/getData`, async (req, res) => {
-    let passedFileName = req.query.fileName;
-    let passedFilePath = req.query.filePath;
+function getData(passedFileName, passedFilePath, req, res) {
     console.log(passedFileName + " " + passedFilePath);
     // Spawns a new child process that calls the python script with the default arg
     const python = spawn('python3.9', [passedFileName, passedFilePath]);
@@ -47,22 +45,19 @@ app.get(`/getData`, async (req, res) => {
             console.log("Sending true data");
             return res.send(trueData); }           ;
     });
-    python.stdout.on('close', (code) =>{
+    python.stdout.on('close', (code) => {
         console.log(`child process exited with code ${code}`);
         console.log("Data sent.");
 
     });
-})
+}
 
 app.get(`/data/linearRegression`, async (req, res) => {
-    let fileName = encodeURIComponent('simpleLinearRegression.py');
-    res.redirect('/getData?fileName=' + fileName + '&filePath=default');
-
+    getData('simpleLinearRegression.py', "default", req, res);
 })
 
 app.get(`/data/ordinaryLeastSquares`, async (req, res) => {
-    let fileName = encodeURIComponent('ordinaryLeastSquares.py');
-    res.redirect('/getData?fileName=' + fileName + '&filePath=default');
+    getData('ordinaryLeastSquares.py', "default", req, res);
 })
 
 const storage = multer.diskStorage({
@@ -97,10 +92,9 @@ app.get(`/data-retrieve/linearRegression`, async (req, res) => {
     for(let i = 0; i < files.length; i++){
         // Ensures that the first file is a csv file
         if(files[i].includes(".csv")){
-            let filePath = encodeURIComponent(__dirname +"/csvFiles/" + files[i]);
+            let filePath = __dirname +"/csvFiles/" + files[i];
             console.log(files[i]);
-            let fileName = encodeURIComponent('simpleLinearRegression.py');
-            res.redirect('/getData?fileName=' + fileName + '&filePath=' + filePath);
+            getData('simpleLinearRegression.py', filePath, req, res);
             break;
         }
     }
@@ -112,9 +106,8 @@ app.get(`/data-retrieve/ordinaryLeastSquares`, async (req, res) => {
     for(let i = 0; i < files.length; i++){
         // Ensures that the first file is a csv file
         if(files[i].includes("csv")){
-            let filePath = encodeURIComponent(__dirname +"/csvFiles/" + files[i]);
-            let fileName = encodeURIComponent('ordinaryLeastSquares.py');
-            res.redirect('/getData?fileName=' + fileName + '&filePath=' + filePath);
+            let filePath = __dirname +"/csvFiles/" + files[i];
+            getData('simpleLinearRegression.py', filePath, req, res);
             break;
         }
     }
