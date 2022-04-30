@@ -31,6 +31,7 @@ function removeAllCSV(files){
 app.get(`/getData`, async (req, res) => {
     let passedFileName = req.query.fileName;
     let passedFilePath = req.query.filePath;
+    console.log(passedFileName + " " + passedFilePath);
     // Spawns a new child process that calls the python script with the default arg
     const python = spawn('python3.9', [passedFileName, passedFilePath]);
 
@@ -38,6 +39,7 @@ app.get(`/getData`, async (req, res) => {
     let trueData = "";
     // collect data from script
     python.stdout.on('data', (data) => {
+        console.log("Some data has been fetched");
         trueData += data.toString();
         // Issue with statsmodels package version 13.2.0, exclusively used in ordinaryLeastSquares.py
         trueData = trueData.replace("eval_env: 1", "");
