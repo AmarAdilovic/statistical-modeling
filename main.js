@@ -102,6 +102,7 @@ function setHTML(){
 
         const linearRegressionImage = document.createElement("img");
         linearRegressionImage.src = "./images/linearImage.jpg";
+        linearRegressionImage.alt = "A graph of a linear regression function"
         linearRegressionImage.style.height = "450px";
         linearRegressionImage.style.width = "450px";
         linearRegressionLink.appendChild(linearRegressionImage);
@@ -118,6 +119,7 @@ function setHTML(){
 
         const olsImage = document.createElement("img");
         olsImage.src = "./images/olsImage.jpg";
+        olsImage.alt = "Four graphs detailing the ordinary least squares model"
         olsImage.style.height = "450px";
         olsImage.style.width = "450px";
         olsLink.appendChild(olsImage);
