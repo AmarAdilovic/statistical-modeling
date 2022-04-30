@@ -202,10 +202,30 @@ function setHTML(){
         input.setAttribute("id", "inputFile");
         input.addEventListener("change", handleFile, false);
 
+        const fetchDiv = document.createElement("div");
+        fetchDiv.setAttribute("id", "fetchDiv");
+        fetchDiv.style.display = "none";
+
+        const fetchScreen = document.createElement("span");
+        fetchScreen.setAttribute("id", "fetchScreen");
+        fetchScreen.textContent = "Fetching randomly generated data from the server ...";
+
         const randDataButton = document.createElement("button");
         randDataButton.textContent = "Random Data";
-        randDataButton.addEventListener('click', () => {
-                getDefaultData();
+        randDataButton.addEventListener('click', async () => {
+                fetchDiv.style.display = "flex";
+                let tryFailed = false;
+                try{
+                        await getDefaultData();
+                }
+                catch{
+                        fetchScreen.textContent = "An internal error has occured, please wait and refresh the page.";
+                        tryFailed = true;
+                }
+                finally{
+                        if(!tryFailed)
+                                fetchDiv.style.display = "none";
+                }
             });
 
         const contentContainer = document.createElement("div");
@@ -239,6 +259,8 @@ function setHTML(){
         form.appendChild(input);
         inputContainer.appendChild(form);
         inputContainer.appendChild(randDataButton);
+        fetchDiv.appendChild(fetchScreen);
+        inputContainer.appendChild(fetchDiv);
 
         contentContainer.style.display = "none";
 
