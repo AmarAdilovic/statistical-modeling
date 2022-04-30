@@ -101,7 +101,7 @@ function setHTML(){
         linearRegressionLink.href = "https://amaradilovic.github.io/statistical-modeling/statisticalModels/linearRegression/linearRegression.html"
 
         const linearRegressionImage = document.createElement("img");
-        linearRegressionImage.src = "./images/linearImage.jpg";
+        linearRegressionImage.src = "client/images/linearImage.jpg";
         linearRegressionImage.style.height = "450px";
         linearRegressionImage.style.width = "450px";
         linearRegressionLink.appendChild(linearRegressionImage);
@@ -117,7 +117,7 @@ function setHTML(){
         olsLink.href = "https://amaradilovic.github.io/statistical-modeling/statisticalModels/ordinaryLeastSquares/ordinaryLeastSquares.html"
 
         const olsImage = document.createElement("img");
-        olsImage.src = "./images/olsImage.jpg";
+        olsImage.src = "client/images/olsImage.jpg";
         olsImage.style.height = "450px";
         olsImage.style.width = "450px";
         olsLink.appendChild(olsImage);
