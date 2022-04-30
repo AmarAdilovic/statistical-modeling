@@ -20,8 +20,8 @@ if(file == "default"):
       headerList = ['x', 'y']
       cwd = os.getcwd()
       path = cwd + "/csvFiles/"
-      dataFrame.to_csv(path + "generated.csv")
       file = path + "generated.csv"
+      dataFrame.to_csv(file)
 else:
       # Reads in the csv file passed in
       dataFrame = pd.read_csv(file)
@@ -48,4 +48,4 @@ buffer = io.BytesIO()
 plt.savefig(buffer, format='jpg')
 buffer.seek(0)
 base64ImageData = base64.b64encode(buffer.read())
-print(json.dumps({'file_name': file.split("/")[6], 'img': base64ImageData.decode('utf-8'), 'ols_regression_results': summary}))
+print(json.dumps({'file_name': file.split("/")[file.count("/")], 'img': base64ImageData.decode('utf-8'), 'ols_regression_results': summary}))
