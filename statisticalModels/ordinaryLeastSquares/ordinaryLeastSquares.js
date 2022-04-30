@@ -94,9 +94,22 @@ function handleFile(){
                         await fetch(`https://statistical-modeling.herokuapp.com/data-upload`, {body: formData, method: "POST",});
                 }
                 await sendFile();
-                console.log("After uploading file, but before getting data");
-                getData();
-                console.log("After getting data");
+                const fetchDiv = document.getElementById("fetchDiv");
+                const fetchScreen = document.getElementById("fetchDiv");
+                fetchScreen.textContent = "Reading file and generating graphs ..."
+                fetchDiv.style.display = "flex";
+                let tryFailed = false;
+                try{
+                        await getData();
+                }
+                catch{
+                        fetchScreen.textContent = "An internal error has occured, please wait and refresh the page.";
+                        tryFailed = true;
+                }
+                finally{
+                        if(!tryFailed)
+                                fetchDiv.style.display = "none";
+                }
                 // Reset the file input so that a user can enter a file, generate random data, then enter the same file
                 const inputFile = document.getElementById("inputFile");
                 inputFile.value = "";
