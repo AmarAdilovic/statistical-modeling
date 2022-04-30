@@ -39,6 +39,9 @@ function hideLoadingScreen(internalError)
     if(globalLoadCounter == 1 && !internalError)
     {
         document.getElementById("loadScreenDiv").style.display = "none";
+        const inputContainer = document.getElementById("inputDiv");
+        inputContainer.style.display = "block";
+        
         const contentContainer = document.getElementById("contentDiv");
         contentContainer.style.display = "flex";
         contentContainer.style.flexDirection = "column";
@@ -280,7 +283,8 @@ function setHTML(){
         inputContainer.appendChild(fetchDiv);
 
         contentContainer.style.display = "none";
-        
+        inputContainer.style.display = "none";
+
         contentContainer.appendChild(fileNameText);
         contentContainer.appendChild(downloadFileLink);
         contentContainer.appendChild(img);
