@@ -56,7 +56,7 @@ const getDefaultData = async () => {
         try{
                 await removeFile();
                 // Returns a promise regarding the response from the server
-                const res = await fetch(`https://statistical-modeling.herokuapp.com/data/ordinaryLeastSquares`);
+                const res = await fetch(`https://statistical-modeling.herokuapp.com/data/ordinaryLeastSquares`, {method: "POST",});
                 // Parses the information passed in and decodes the JSON object with the image and other information
                 const data = JSON.parse(await res.text());
                 assignDataToHTML(data);

@@ -73,7 +73,7 @@ const storage = multer.diskStorage({
     }
 })
 
-app.get(`/clear-file-cache`, async(req, res) => {  
+app.post(`/clear-file-cache`, async(req, res) => {  
     // Before sending data, all CSVs are removed from the csvFiles directory in the case that a previous run
     // left a hanging csv
     removeAllCSV(fs.readdirSync(__dirname + "/csvFiles/"));
