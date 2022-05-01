@@ -1,1 +1,1 @@
-Exclusively the front-end of the statisticalModels project, to be hosted statically.
+Exclusively the front-end of the statisticalModels project, to be hosted on GitHub Pages.
