@@ -271,7 +271,7 @@ function setHTML(){
         
         const loadScreen = document.createElement("span");
         loadScreen.setAttribute("id", "loadScreen");
-        loadScreen.textContent = "Loading ...";
+        loadScreen.textContent = "Loading ... This may take a moment if the server has been idled.";
 
         form.appendChild(input);
         inputContainer.appendChild(form);
