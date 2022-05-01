@@ -33,6 +33,7 @@ app.get(`/getData`, async (req, res) => {
     let passedFilePath = req.query.filePath;
     // Spawns a new child process that calls the python script with the default arg
     const python = spawn('python3.9', [passedFileName, passedFilePath]);
+    let sentDataOnce = false;
 
     // The data is sent as a buffer from stdout, trueData exists to compile that buffered data
     let trueData = "";
@@ -41,9 +42,11 @@ app.get(`/getData`, async (req, res) => {
         trueData += data.toString();
         // Issue with statsmodels package version 13.2.0, exclusively used in ordinaryLeastSquares.py
         trueData = trueData.replace("eval_env: 1", "");
-        if(trueData.includes("\"}")){
+        if(trueData.includes("\"}") && !sentDataOnce){
+            sentDataOnce = true;
             console.log("Sending true data");
-            return res.send(trueData); }           ;
+            return res.send(trueData); 
+        }
     });
     python.stderr.once('data', (data) => {
         console.log(`child process errored with ${data}`);
