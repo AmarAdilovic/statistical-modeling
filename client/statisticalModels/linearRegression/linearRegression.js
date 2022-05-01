@@ -1,25 +1,37 @@
 function assignDataToHTML(data){
-        const fileNameText = document.getElementById("fileNameText");
-        fileNameText.textContent = data.file_name;
+        if(data.file_name != "ERROR"){
+                document.getElementById("contentDiv").style.display = "flex";
+                document.getElementById("loadScreenDiv").style.display = "none";
 
-        const downloadFileLink = document.getElementById("downloadFileLink");  
-        let loc = window.location.pathname;
-        let mainWorkingDir = loc.substring(0, loc.lastIndexOf('client'));
-        downloadFileLink.download = data.file_name;
-        downloadFileLink.href = mainWorkingDir + "csvFiles/" + data.file_name;
-        downloadFileLink.textContent = "Download " + data.file_name ;
+                const fileNameText = document.getElementById("fileNameText");
+                fileNameText.textContent = data.file_name;
 
-        const img = document.getElementById("chart");
-        img.src = `data:image/jpg;base64,${data.img}`;
+                const downloadFileLink = document.getElementById("downloadFileLink");  
+                let loc = window.location.pathname;
+                let mainWorkingDir = loc.substring(0, loc.lastIndexOf('client'));
+                downloadFileLink.download = data.file_name;
+                downloadFileLink.href = mainWorkingDir + "csvFiles/" + data.file_name;
+                downloadFileLink.textContent = "Download " + data.file_name ;
 
-        const equationText = document.getElementById("equationText");
-        equationText.textContent = "Simple linear regression equation for given data: " + data.yHat;
-        const rValText = document.getElementById("rValText");
-        rValText.textContent = "R-value:  " + data.r_val;
-        const r2ValText = document.getElementById("r2ValText");
-        r2ValText.textContent = "R^2-value:  " + data.r_2_val;
-        const confIntervalText = document.getElementById("confIntervalText");
-        confIntervalText.textContent = "95% confidence interval for the slope of the regression line: " + data.slope_coefficient + " +/- " + data.margin_of_error;
+                const img = document.getElementById("chart");
+                img.src = `data:image/jpg;base64,${data.img}`;
+
+                const equationText = document.getElementById("equationText");
+                equationText.textContent = "Simple linear regression equation for given data: " + data.yHat;
+                const rValText = document.getElementById("rValText");
+                rValText.textContent = "R-value:  " + data.r_val;
+                const r2ValText = document.getElementById("r2ValText");
+                r2ValText.textContent = "R^2-value:  " + data.r_2_val;
+                const confIntervalText = document.getElementById("confIntervalText");
+                confIntervalText.textContent = "95% confidence interval for the slope of the regression line: " + data.slope_coefficient + " +/- " + data.margin_of_error;
+        }
+        else{
+                const contentContainer = document.getElementById("contentDiv");
+                contentContainer.style.display = "none";
+
+                document.getElementById("loadScreenDiv").style.display = "flex";
+                document.getElementById("loadScreen").textContent = "You have submitted an improperly formatted CSV file. Please submit a CSV file that has two columns with column names, and then a list of values underneath each column.";
+        }
 }
 
 // Show loading screen only if this is the first time it has been shown

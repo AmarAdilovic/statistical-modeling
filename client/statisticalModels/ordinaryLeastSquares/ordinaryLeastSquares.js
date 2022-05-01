@@ -1,24 +1,34 @@
 function assignDataToHTML(data){
-        const fileNameText = document.getElementById("fileNameText");
-        fileNameText.textContent = data.file_name;
+        if(data.file_name != "ERROR"){
+                document.getElementById("contentDiv").style.display = "flex";
+                document.getElementById("loadScreenDiv").style.display = "none";
 
-        const downloadFileLink = document.getElementById("downloadFileLink");  
-        let loc = window.location.pathname;
-        let mainWorkingDir = loc.substring(0, loc.lastIndexOf('client'));
-        downloadFileLink.download = data.file_name;
-        downloadFileLink.href = mainWorkingDir + "csvFiles/" + data.file_name;
-        downloadFileLink.textContent = "Download " + data.file_name ;
+                const fileNameText = document.getElementById("fileNameText");
+                fileNameText.textContent = data.file_name;
 
-        const img = document.getElementById("chart");
-        img.src = `data:image/jpg;base64,${data.img}`;
+                const downloadFileLink = document.getElementById("downloadFileLink");  
+                let loc = window.location.pathname;
+                let mainWorkingDir = loc.substring(0, loc.lastIndexOf('client'));
+                downloadFileLink.download = data.file_name;
+                downloadFileLink.href = mainWorkingDir + "csvFiles/" + data.file_name;
+                downloadFileLink.textContent = "Download " + data.file_name ;
 
-        const olsText = document.getElementById("olsText");
-        let splitOLSResult = data.ols_regression_results.split(/\n|\s\n/);
-        for(let i = 0; i < 25; i++){
-                const olsLine = document.getElementById(i);
-                olsLine.textContent = splitOLSResult[i];
+                const img = document.getElementById("chart");
+                img.src = `data:image/jpg;base64,${data.img}`;
+
+                let splitOLSResult = data.ols_regression_results.split(/\n|\s\n/);
+                for(let i = 0; i < 25; i++){
+                        const olsLine = document.getElementById(i);
+                        olsLine.textContent = splitOLSResult[i];
+                }
         }
+        else{
+                const contentContainer = document.getElementById("contentDiv");
+                contentContainer.style.display = "none";
 
+                document.getElementById("loadScreenDiv").style.display = "flex";
+                document.getElementById("loadScreen").textContent = "You have submitted an improperly formatted CSV file. Please submit a CSV file that has two columns with column names, and then a list of values underneath each column.";
+        }
 }
 
 // Show loading screen only if this is the first time it has been shown

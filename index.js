@@ -45,9 +45,9 @@ app.get(`/getData`, async (req, res) => {
             console.log("Sending true data");
             return res.send(trueData); }           ;
     });
-    python.stderr.on('data', (data) => {
+    python.stderr.once('data', (data) => {
         console.log(`child process errored with ${data}`);
-
+        return res.send(JSON.parse('{"file_name":"ERROR"}'))
     });
     python.stdout.on('close', (code) => {
         console.log(`child process exited with code ${code}`);
