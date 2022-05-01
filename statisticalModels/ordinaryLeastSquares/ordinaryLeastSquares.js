@@ -61,6 +61,8 @@ function hideLoadingScreen(internalError)
 }
 
 const removeFile = async () => {
+        // To locally host: http://localhost:3000/
+        // Heroku host: https://statistical-modeling.herokuapp.com/
         await fetch(`https://statistical-modeling.herokuapp.com/clear-file-cache`, {method: "POST",});
 }
 
