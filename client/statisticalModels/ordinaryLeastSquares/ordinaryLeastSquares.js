@@ -306,5 +306,47 @@ function setHTML(){
         container.appendChild(loadScreenContainer);
 }
 
+function enableMobileSupport(){
+        if (window.matchMedia("(max-width: 355px)").matches) {
+                document.getElementById("chart").style.width = "300px";
+                document.getElementById("chart").style.height = "250px";
+                for(let i = 0; i < 25; i++){
+                        document.getElementById(i).style.fontSize = ".4em";
+                }
+        }
+        else if (window.matchMedia("(max-width: 455px)").matches) {
+                document.getElementById("chart").style.width = "350px";
+                document.getElementById("chart").style.height = "300px";
+                for(let i = 0; i < 25; i++){
+                        document.getElementById(i).style.fontSize = ".5em";
+                }
+        }
+        else if (window.matchMedia("(max-width: 555px)").matches) {
+                document.getElementById("chart").style.width = "450px";
+                document.getElementById("chart").style.height = "400px";
+                for(let i = 0; i < 25; i++){
+                        document.getElementById(i).style.fontSize = ".7em";
+                }
+        }
+        else if (window.matchMedia("(max-width: 660px)").matches) {
+                document.querySelector(".container").style.margin = "70px";
+                document.getElementById("chart").style.width = "550px";
+                document.getElementById("chart").style.height = "450px";
+                for(let i = 0; i < 25; i++){
+                        document.getElementById(i).style.fontSize = ".85em";
+                }
+        }
+        else if (window.matchMedia("(max-width: 750px)").matches) {
+                document.querySelector(".container").style.margin = "60px";
+                document.getElementById("chart").style.width = "650px";
+                document.getElementById("chart").style.height = "550px";
+        }
+        else if (window.matchMedia("(max-width: 850px)").matches) {
+                document.getElementById("chart").style.width = "750px";
+                document.getElementById("chart").style.height = "550px";
+        }
+}
+
 setHTML();
+enableMobileSupport();
 getDefaultData();

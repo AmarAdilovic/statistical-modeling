@@ -141,4 +141,11 @@ function setHTML(){
         container.appendChild(contentContainer);
 }
 
+function enableMobileSupport(){
+        if (window.matchMedia("(max-width: 850px)").matches) {
+                document.getElementById("modelLinkDiv").style.flexDirection = "column";
+        }
+}
+
 setHTML();
+enableMobileSupport();
