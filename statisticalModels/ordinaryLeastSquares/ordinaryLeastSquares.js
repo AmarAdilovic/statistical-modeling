@@ -29,7 +29,6 @@ function assignDataToHTML(data){
                 document.getElementById("loadScreenDiv").style.display = "flex";
                 document.getElementById("loadScreen").textContent = "You have submitted an improperly formatted CSV file. Please submit a CSV file that has two columns with column names, and then a list of values underneath each column.";
         }
-
 }
 
 // Show loading screen only if this is the first time it has been shown
@@ -61,8 +60,6 @@ function hideLoadingScreen(internalError)
 }
 
 const removeFile = async () => {
-        // To locally host: http://localhost:3000/
-        // Heroku host: https://statistical-modeling.herokuapp.com/
         await fetch(`https://statistical-modeling.herokuapp.com/clear-file-cache`, {method: "POST",});
 }
 
@@ -308,5 +305,47 @@ function setHTML(){
         container.appendChild(loadScreenContainer);
 }
 
+function enableMobileSupport(){
+        if (window.matchMedia("(max-width: 355px)").matches) {
+                document.getElementById("chart").style.width = "300px";
+                document.getElementById("chart").style.height = "250px";
+                for(let i = 0; i < 25; i++){
+                        document.getElementById(i).style.fontSize = ".4em";
+                }
+        }
+        else if (window.matchMedia("(max-width: 455px)").matches) {
+                document.getElementById("chart").style.width = "350px";
+                document.getElementById("chart").style.height = "300px";
+                for(let i = 0; i < 25; i++){
+                        document.getElementById(i).style.fontSize = ".5em";
+                }
+        }
+        else if (window.matchMedia("(max-width: 555px)").matches) {
+                document.getElementById("chart").style.width = "450px";
+                document.getElementById("chart").style.height = "400px";
+                for(let i = 0; i < 25; i++){
+                        document.getElementById(i).style.fontSize = ".7em";
+                }
+        }
+        else if (window.matchMedia("(max-width: 660px)").matches) {
+                document.querySelector(".container").style.margin = "70px";
+                document.getElementById("chart").style.width = "550px";
+                document.getElementById("chart").style.height = "450px";
+                for(let i = 0; i < 25; i++){
+                        document.getElementById(i).style.fontSize = ".85em";
+                }
+        }
+        else if (window.matchMedia("(max-width: 750px)").matches) {
+                document.querySelector(".container").style.margin = "60px";
+                document.getElementById("chart").style.width = "650px";
+                document.getElementById("chart").style.height = "550px";
+        }
+        else if (window.matchMedia("(max-width: 850px)").matches) {
+                document.getElementById("chart").style.width = "750px";
+                document.getElementById("chart").style.height = "550px";
+        }
+}
+
 setHTML();
+enableMobileSupport();
 getDefaultData();

@@ -317,5 +317,20 @@ function setHTML(){
         container.appendChild(loadScreenContainer);
 }
 
+function enableMobileSupport(){
+        if (window.matchMedia("(max-width: 395px)").matches) {
+                document.querySelector(".container").style.margin = "75px";
+                document.getElementById("chart").style.width = "300px";
+                document.getElementById("chart").style.height = "260px";
+        }
+        else if (window.matchMedia("(max-width: 530px)").matches) {
+                document.getElementById("chart").style.width = "480px";
+                document.getElementById("chart").style.height = "360px";
+        }
+
+
+}
+
 setHTML();
+enableMobileSupport();
 getDefaultData();
