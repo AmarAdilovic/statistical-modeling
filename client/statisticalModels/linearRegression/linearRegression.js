@@ -323,6 +323,7 @@ function enableMobileSupport(){
                 document.getElementById("chart").style.height = "260px";
         }
         else if (window.matchMedia("(max-width: 530px)").matches) {
+                document.querySelector(".container").style.margin = "60px"
                 document.getElementById("chart").style.width = "480px";
                 document.getElementById("chart").style.height = "360px";
         }
