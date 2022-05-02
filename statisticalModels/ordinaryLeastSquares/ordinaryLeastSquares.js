@@ -305,44 +305,36 @@ function setHTML(){
         container.appendChild(loadScreenContainer);
 }
 
+function setMobileParameters(chartWidth, chartHeight, setFont, fontSize, marginSize){
+        document.getElementById("chart").style.width = chartWidth;
+        document.getElementById("chart").style.height = chartHeight;
+        document.querySelector(".container").style.margin = marginSize;  
+        if(setFont){
+                for(let i = 0; i < 25; i++){
+                        document.getElementById(i).style.fontSize = fontSize;
+                }
+        }
+
+}
+
 function enableMobileSupport(){
         if (window.matchMedia("(max-width: 355px)").matches) {
-                document.getElementById("chart").style.width = "300px";
-                document.getElementById("chart").style.height = "250px";
-                for(let i = 0; i < 25; i++){
-                        document.getElementById(i).style.fontSize = ".4em";
-                }
+                setMobileParameters("300px", "250px", true, ".4em", "80px");
         }
         else if (window.matchMedia("(max-width: 455px)").matches) {
-                document.getElementById("chart").style.width = "350px";
-                document.getElementById("chart").style.height = "300px";
-                for(let i = 0; i < 25; i++){
-                        document.getElementById(i).style.fontSize = ".5em";
-                }
+                setMobileParameters("350px", "300px", true, ".5em", "75px");
         }
         else if (window.matchMedia("(max-width: 555px)").matches) {
-                document.getElementById("chart").style.width = "450px";
-                document.getElementById("chart").style.height = "400px";
-                for(let i = 0; i < 25; i++){
-                        document.getElementById(i).style.fontSize = ".7em";
-                }
+                setMobileParameters("450px", "400px", true, ".7em", "70px");
         }
         else if (window.matchMedia("(max-width: 660px)").matches) {
-                document.querySelector(".container").style.margin = "70px";
-                document.getElementById("chart").style.width = "550px";
-                document.getElementById("chart").style.height = "450px";
-                for(let i = 0; i < 25; i++){
-                        document.getElementById(i).style.fontSize = ".85em";
-                }
+                setMobileParameters("550px", "450px", true, ".85em", "65px");
         }
         else if (window.matchMedia("(max-width: 750px)").matches) {
-                document.querySelector(".container").style.margin = "60px";
-                document.getElementById("chart").style.width = "650px";
-                document.getElementById("chart").style.height = "550px";
+                setMobileParameters("650px", "550px", false, "none", "60px");
         }
         else if (window.matchMedia("(max-width: 850px)").matches) {
-                document.getElementById("chart").style.width = "750px";
-                document.getElementById("chart").style.height = "550px";
+                setMobileParameters("750px", "550px", false, "none", "60px");
         }
 }
 
