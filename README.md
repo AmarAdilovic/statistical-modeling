@@ -2,7 +2,7 @@ GitHub Pages link: https://amaradilovic.github.io/statistical-modeling/
 
 To use:
 
-To use the hosted website, follow GitHub Pages link, and select the statistical modeling method you would perfer to use. Upload CSV files that need to be analyzed and wait for a response. CSV files must be properly formatted to fit the model or an error will be returned.
+To use the hosted website, follow the GitHub Pages link, and select the statistical modeling method you would perfer to use. Upload CSV files that need to be analyzed and wait for a response. CSV files must be properly formatted to fit the model or an error will be returned.
 
 How it works:
 
