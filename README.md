@@ -1,3 +1,5 @@
+UPDATE 11/27/22:
+As of 11/28/22, Heroku will no longer be offering free dynos. As a result, the live demo of this project will no longer function properly. 
 GitHub Pages link: https://amaradilovic.github.io/statistical-modeling/
 
 To use:
